@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ 3-Phase Power Factor Monitor</title>
+    <meta name="description" content="Real-time 3-phase power factor monitoring dashboard">
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- ── Header ──────────────────────────────────────── -->
+    <header id="main-header">
+        <div class="header-left">
+            <span class="logo">⚡</span>
+            <h1>3-Phase Power Factor Monitor</h1>
+        </div>
+        <div class="header-right">
+            <span id="connection-status" class="status-badge connected">● Connected</span>
+            <span id="reading-count" class="badge">0 readings</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- ── Overall Power Factor ────────────────────── -->
+        <section id="overall-section">
+            <div class="overall-card" id="overall-pf-card">
+                <div class="overall-label">OVERALL POWER FACTOR</div>
+                <div class="overall-value" id="overall-pf-value">—</div>
+                <div class="overall-status" id="overall-pf-status">Waiting for data...</div>
+                <div class="metric-bar-container large">
+                    <div class="metric-bar" id="overall-pf-bar" style="width: 0%"></div>
+                </div>
+                <div class="overall-power-row">
+                    <span>Total P: <strong id="total-real-power">—</strong> W</span>
+                    <span>Total S: <strong id="total-apparent-power">—</strong> VA</span>
+                    <span>Total Q: <strong id="total-reactive-power">—</strong> VAR</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── 3 Phase Cards ───────────────────────────── -->
+        <section id="phase-cards-section">
+            <!-- Phase R -->
+            <div class="phase-card phase-r" id="card-phase-r">
+                <div class="phase-header">
+                    <span class="phase-dot dot-r"></span>
+                    <span class="phase-name">Phase R</span>
+                </div>
+                <div class="phase-metrics">
+                    <div class="pm"><span class="pm-label">Voltage</span><span class="pm-value" id="v-r">—</span><span
+                            class="pm-unit">V</span></div>
+                    <div class="pm"><span class="pm-label">Current</span><span class="pm-value" id="i-r">—</span><span
+                            class="pm-unit">A</span></div>
+                    <div class="pm pf-metric"><span class="pm-label">Power Factor</span><span class="pm-value"
+                            id="pf-r">—</span></div>
+                    <div class="pm"><span class="pm-label">Real Power</span><span class="pm-value"
+                            id="p-r">—</span><span class="pm-unit">W</span></div>
+                    <div class="pm"><span class="pm-label">Apparent</span><span class="pm-value" id="s-r">—</span><span
+                            class="pm-unit">VA</span></div>
+                    <div class="pm"><span class="pm-label">Reactive</span><span class="pm-value" id="q-r">—</span><span
+                            class="pm-unit">VAR</span></div>
+                </div>
+                <div class="phase-status" id="status-r">Waiting...</div>
+            </div>
+
+            <!-- Phase Y -->
+            <div class="phase-card phase-y" id="card-phase-y">
+                <div class="phase-header">
+                    <span class="phase-dot dot-y"></span>
+                    <span class="phase-name">Phase Y</span>
+                </div>
+                <div class="phase-metrics">
+                    <div class="pm"><span class="pm-label">Voltage</span><span class="pm-value" id="v-y">—</span><span
+                            class="pm-unit">V</span></div>
+                    <div class="pm"><span class="pm-label">Current</span><span class="pm-value" id="i-y">—</span><span
+                            class="pm-unit">A</span></div>
+                    <div class="pm pf-metric"><span class="pm-label">Power Factor</span><span class="pm-value"
+                            id="pf-y">—</span></div>
+                    <div class="pm"><span class="pm-label">Real Power</span><span class="pm-value"
+                            id="p-y">—</span><span class="pm-unit">W</span></div>
+                    <div class="pm"><span class="pm-label">Apparent</span><span class="pm-value" id="s-y">—</span><span
+                            class="pm-unit">VA</span></div>
+                    <div class="pm"><span class="pm-label">Reactive</span><span class="pm-value" id="q-y">—</span><span
+                            class="pm-unit">VAR</span></div>
+                </div>
+                <div class="phase-status" id="status-y">Waiting...</div>
+            </div>
+
+            <!-- Phase B -->
+            <div class="phase-card phase-b" id="card-phase-b">
+                <div class="phase-header">
+                    <span class="phase-dot dot-b"></span>
+                    <span class="phase-name">Phase B</span>
+                </div>
+                <div class="phase-metrics">
+                    <div class="pm"><span class="pm-label">Voltage</span><span class="pm-value" id="v-b">—</span><span
+                            class="pm-unit">V</span></div>
+                    <div class="pm"><span class="pm-label">Current</span><span class="pm-value" id="i-b">—</span><span
+                            class="pm-unit">A</span></div>
+                    <div class="pm pf-metric"><span class="pm-label">Power Factor</span><span class="pm-value"
+                            id="pf-b">—</span></div>
+                    <div class="pm"><span class="pm-label">Real Power</span><span class="pm-value"
+                            id="p-b">—</span><span class="pm-unit">W</span></div>
+                    <div class="pm"><span class="pm-label">Apparent</span><span class="pm-value" id="s-b">—</span><span
+                            class="pm-unit">VA</span></div>
+                    <div class="pm"><span class="pm-label">Reactive</span><span class="pm-value" id="q-b">—</span><span
+                            class="pm-unit">VAR</span></div>
+                </div>
+                <div class="phase-status" id="status-b">Waiting...</div>
+            </div>
+        </section>
+
+        <!-- ── Gauges ──────────────────────────────────── -->
+        <section id="gauge-section">
+            <div class="panel gauge-panel">
+                <h2>Power Factor Gauges</h2>
+                <div class="gauges-row">
+                    <div class="gauge-item">
+                        <canvas id="gauge-r" width="200" height="130"></canvas>
+                        <div class="gauge-phase-label">Phase R</div>
+                        <div class="gauge-value" id="gauge-val-r">—</div>
+                    </div>
+                    <div class="gauge-item">
+                        <canvas id="gauge-y" width="200" height="130"></canvas>
+                        <div class="gauge-phase-label">Phase Y</div>
+                        <div class="gauge-value" id="gauge-val-y">—</div>
+                    </div>
+                    <div class="gauge-item">
+                        <canvas id="gauge-b" width="200" height="130"></canvas>
+                        <div class="gauge-phase-label">Phase B</div>
+                        <div class="gauge-value" id="gauge-val-b">—</div>
+                    </div>
+                </div>
+                <div class="threshold-info">Threshold: <strong id="threshold-display">{{ threshold }}</strong></div>
+            </div>
+
+            <div class="panel stats-panel">
+                <h2>Phase Statistics</h2>
+                <div class="stats-tabs">
+                    <button class="stats-tab active" onclick="showStatTab('R')">Phase R</button>
+                    <button class="stats-tab" onclick="showStatTab('Y')">Phase Y</button>
+                    <button class="stats-tab" onclick="showStatTab('B')">Phase B</button>
+                </div>
+                <div id="stats-content">
+                    <div class="stat-row"><span class="stat-label">Avg PF</span><span class="stat-value"
+                            id="stat-avg-pf">—</span></div>
+                    <div class="stat-row"><span class="stat-label">Min PF</span><span class="stat-value"
+                            id="stat-min-pf">—</span></div>
+                    <div class="stat-row"><span class="stat-label">Max PF</span><span class="stat-value"
+                            id="stat-max-pf">—</span></div>
+                    <div class="stat-row"><span class="stat-label">Avg Voltage</span><span class="stat-value"
+                            id="stat-avg-v">—</span></div>
+                    <div class="stat-row"><span class="stat-label">Avg Current</span><span class="stat-value"
+                            id="stat-avg-i">—</span></div>
+                    <div class="stat-row warning-row"><span class="stat-label">Low PF Events</span><span
+                            class="stat-value" id="stat-low-pf">—</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Charts ──────────────────────────────────── -->
+        <section id="charts-section">
+            <div class="panel chart-panel">
+                <h2>Power Factor Trend — All Phases</h2>
+                <canvas id="pf-chart"></canvas>
+            </div>
+            <div class="panel chart-panel">
+                <h2>Voltage — All Phases</h2>
+                <canvas id="voltage-chart"></canvas>
+            </div>
+        </section>
+
+        <section id="charts-section-2">
+            <div class="panel chart-panel">
+                <h2>Current — All Phases</h2>
+                <canvas id="current-chart"></canvas>
+            </div>
+            <div class="panel chart-panel">
+                <h2>Real Power — All Phases</h2>
+                <canvas id="power-chart"></canvas>
+            </div>
+        </section>
+
+        <!-- ── Readings Table ──────────────────────────── -->
+        <section id="table-section">
+            <div class="panel">
+                <h2>Recent Readings</h2>
+                <div class="table-scroll">
+                    <table id="readings-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Time</th>
+                                <th colspan="3" class="th-phase-r">Phase R</th>
+                                <th colspan="3" class="th-phase-y">Phase Y</th>
+                                <th colspan="3" class="th-phase-b">Phase B</th>
+                                <th rowspan="2">Overall PF</th>
+                                <th rowspan="2">Status</th>
+                            </tr>
+                            <tr>
+                                <th class="th-phase-r">V</th>
+                                <th class="th-phase-r">A</th>
+                                <th class="th-phase-r">PF</th>
+                                <th class="th-phase-y">V</th>
+                                <th class="th-phase-y">A</th>
+                                <th class="th-phase-y">PF</th>
+                                <th class="th-phase-b">V</th>
+                                <th class="th-phase-b">A</th>
+                                <th class="th-phase-b">PF</th>
+                            </tr>
+                        </thead>
+                        <tbody id="readings-body">
+                            <tr>
+                                <td colspan="12" class="empty-msg">Waiting for 3-phase data from ESP32...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>3-Phase Power Factor Monitor &copy; 2026 — Mini Project</p>
+    </footer>
+
+    <script>
+        const THRESHOLD = {{ threshold }};
+        const REFRESH_MS = 2000;
+        const PHASES = ['phase_r', 'phase_y', 'phase_b'];
+        const PHASE_LABELS = ['R', 'Y', 'B'];
+        const PHASE_COLORS = ['#ff5252', '#ffd740', '#448aff'];
+        const PHASE_BG = ['rgba(255,82,82,0.1)', 'rgba(255,215,64,0.1)', 'rgba(68,138,255,0.1)'];
+        let currentStatTab = 'R';
+
+        // ── Chart Setup ─────────────────────────────────────
+        function makeChart(ctx, datasets, yConfig) {
+            return new Chart(ctx, {
+                type: 'line',
+                data: { labels: [], datasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        y: { ...yConfig, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#aaa' } },
+                        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#888', maxTicksLimit: 10 } }
+                    },
+                    plugins: { legend: { labels: { color: '#ccc' } } }
+                }
+            });
+        }
+
+        const pfChart = makeChart(
+            document.getElementById('pf-chart').getContext('2d'),
+            [
+                ...PHASE_LABELS.map((l, i) => ({ label: `PF ${l}`, data: [], borderColor: PHASE_COLORS[i], backgroundColor: PHASE_BG[i], borderWidth: 2, fill: false, tension: 0.3, pointRadius: 2 })),
+                { label: 'Threshold', data: [], borderColor: '#888', borderWidth: 1.5, borderDash: [8, 4], pointRadius: 0, fill: false }
+            ],
+            { min: 0, max: 1.05 }
+        );
+
+        const voltageChart = makeChart(
+            document.getElementById('voltage-chart').getContext('2d'),
+            PHASE_LABELS.map((l, i) => ({ label: `V ${l}`, data: [], borderColor: PHASE_COLORS[i], backgroundColor: PHASE_BG[i], borderWidth: 2, fill: false, tension: 0.3, pointRadius: 2 })),
+            {}
+        );
+
+        const currentChart = makeChart(
+            document.getElementById('current-chart').getContext('2d'),
+            PHASE_LABELS.map((l, i) => ({ label: `I ${l}`, data: [], borderColor: PHASE_COLORS[i], backgroundColor: PHASE_BG[i], borderWidth: 2, fill: false, tension: 0.3, pointRadius: 2 })),
+            {}
+        );
+
+        const powerChart = makeChart(
+            document.getElementById('power-chart').getContext('2d'),
+            PHASE_LABELS.map((l, i) => ({ label: `P ${l}`, data: [], borderColor: PHASE_COLORS[i], backgroundColor: PHASE_BG[i], borderWidth: 2, fill: true, tension: 0.3, pointRadius: 2 })),
+            {}
+        );
+
+        // ── Gauge Drawing ───────────────────────────────────
+        function drawGauge(canvasId, value, phaseColor) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+            const cx = w / 2, cy = h - 5;
+            const radius = Math.min(w / 2, h) - 20;
+
+            ctx.clearRect(0, 0, w, h);
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, Math.PI, 0, false);
+            ctx.lineWidth = 16;
+            ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+            ctx.stroke();
+
+            let color = '#ff5252';
+            if (value >= THRESHOLD) color = '#00e676';
+            else if (value >= THRESHOLD - 0.1) color = '#ffd740';
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, Math.PI, Math.PI + (Math.PI * Math.max(0, Math.min(1, value))), false);
+            ctx.lineWidth = 16;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = color;
+            ctx.stroke();
+
+            // Threshold marker
+            const tAngle = Math.PI + (Math.PI * THRESHOLD);
+            const tx = cx + radius * Math.cos(tAngle);
+            const ty = cy + radius * Math.sin(tAngle);
+            ctx.beginPath();
+            ctx.arc(tx, ty, 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#ff5252';
+            ctx.fill();
+        }
+
+        // ── Stats Tab ───────────────────────────────────────
+        function showStatTab(phase) {
+            currentStatTab = phase;
+            document.querySelectorAll('.stats-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // ── Update Phase Card ───────────────────────────────
+        function updatePhaseCard(suffix, data) {
+            document.getElementById('v-' + suffix).textContent = data.voltage.toFixed(1);
+            document.getElementById('i-' + suffix).textContent = data.current.toFixed(3);
+            document.getElementById('pf-' + suffix).textContent = data.power_factor.toFixed(3);
+            document.getElementById('p-' + suffix).textContent = data.real_power.toFixed(1);
+            document.getElementById('s-' + suffix).textContent = data.apparent_power.toFixed(1);
+            document.getElementById('q-' + suffix).textContent = data.reactive_power.toFixed(1);
+
+            const statusEl = document.getElementById('status-' + suffix);
+            const card = document.getElementById('card-phase-' + suffix);
+
+            if (data.power_factor >= THRESHOLD) {
+                statusEl.textContent = '✅ Good';
+                statusEl.className = 'phase-status good';
+                card.classList.remove('low-pf');
+            } else {
+                statusEl.textContent = '⚠️ Low PF!';
+                statusEl.className = 'phase-status low';
+                card.classList.add('low-pf');
+            }
+        }
+
+        // ── Fetch & Update ──────────────────────────────────
+        async function fetchData() {
+            try {
+                const [readingsRes, statsRes] = await Promise.all([
+                    fetch('/api/readings?count=50'),
+                    fetch('/api/stats')
+                ]);
+                const readingsData = await readingsRes.json();
+                const statsData = await statsRes.json();
+                const rds = readingsData.readings;
+                if (rds.length === 0) return;
+
+                document.getElementById('connection-status').className = 'status-badge connected';
+                document.getElementById('connection-status').textContent = '● Receiving';
+                document.getElementById('reading-count').textContent = readingsData.total_count + ' readings';
+
+                const latest = rds[rds.length - 1];
+
+                // Update phase cards
+                updatePhaseCard('r', latest.phase_r);
+                updatePhaseCard('y', latest.phase_y);
+                updatePhaseCard('b', latest.phase_b);
+
+                // Overall
+                const opf = latest.overall_pf;
+                document.getElementById('overall-pf-value').textContent = opf.toFixed(3);
+                document.getElementById('total-real-power').textContent = latest.total_real_power.toFixed(1);
+                document.getElementById('total-apparent-power').textContent = latest.total_apparent_power.toFixed(1);
+                document.getElementById('total-reactive-power').textContent = latest.total_reactive_power.toFixed(1);
+
+                const overallCard = document.getElementById('overall-pf-card');
+                const overallStatus = document.getElementById('overall-pf-status');
+                const overallBar = document.getElementById('overall-pf-bar');
+                overallBar.style.width = (opf * 100) + '%';
+
+                if (opf >= THRESHOLD) {
+                    overallCard.className = 'overall-card pf-good';
+                    overallStatus.textContent = '✅ All phases within acceptable range';
+                    overallBar.className = 'metric-bar good';
+                } else if (opf >= THRESHOLD - 0.1) {
+                    overallCard.className = 'overall-card pf-warning';
+                    overallStatus.textContent = '⚠️ Overall power factor is marginal';
+                    overallBar.className = 'metric-bar warning';
+                } else {
+                    overallCard.className = 'overall-card pf-critical';
+                    overallStatus.textContent = '🚨 CRITICAL — Overall power factor too low!';
+                    overallBar.className = 'metric-bar critical';
+                }
+
+                // Gauges
+                drawGauge('gauge-r', latest.phase_r.power_factor, PHASE_COLORS[0]);
+                drawGauge('gauge-y', latest.phase_y.power_factor, PHASE_COLORS[1]);
+                drawGauge('gauge-b', latest.phase_b.power_factor, PHASE_COLORS[2]);
+                document.getElementById('gauge-val-r').textContent = latest.phase_r.power_factor.toFixed(3);
+                document.getElementById('gauge-val-y').textContent = latest.phase_y.power_factor.toFixed(3);
+                document.getElementById('gauge-val-b').textContent = latest.phase_b.power_factor.toFixed(3);
+
+                // Stats tab
+                if (statsData.phases && statsData.phases[currentStatTab]) {
+                    const s = statsData.phases[currentStatTab];
+                    document.getElementById('stat-avg-pf').textContent = s.avg_pf;
+                    document.getElementById('stat-min-pf').textContent = s.min_pf;
+                    document.getElementById('stat-max-pf').textContent = s.max_pf;
+                    document.getElementById('stat-avg-v').textContent = s.avg_voltage + ' V';
+                    document.getElementById('stat-avg-i').textContent = s.avg_current + ' A';
+                    document.getElementById('stat-low-pf').textContent = s.low_pf_count;
+                }
+
+                // Charts
+                const labels = rds.map(r => r.timestamp ? r.timestamp.split(' ')[1] : '');
+
+                pfChart.data.labels = labels;
+                PHASES.forEach((p, i) => { pfChart.data.datasets[i].data = rds.map(r => r[p].power_factor); });
+                pfChart.data.datasets[3].data = labels.map(() => THRESHOLD);
+                pfChart.update('none');
+
+                voltageChart.data.labels = labels;
+                PHASES.forEach((p, i) => { voltageChart.data.datasets[i].data = rds.map(r => r[p].voltage); });
+                voltageChart.update('none');
+
+                currentChart.data.labels = labels;
+                PHASES.forEach((p, i) => { currentChart.data.datasets[i].data = rds.map(r => r[p].current); });
+                currentChart.update('none');
+
+                powerChart.data.labels = labels;
+                PHASES.forEach((p, i) => { powerChart.data.datasets[i].data = rds.map(r => r[p].real_power); });
+                powerChart.update('none');
+
+                // Table
+                const tbody = document.getElementById('readings-body');
+                const recent = rds.slice(-12).reverse();
+                tbody.innerHTML = recent.map(r => {
+                    const cls = r.overall_pf >= THRESHOLD ? 'status-good' : 'status-bad';
+                    const st = r.overall_pf >= THRESHOLD ? '✅' : '⚠️';
+                    return `<tr class="${cls}">
+                    <td>${r.timestamp ? r.timestamp.split(' ')[1] : '—'}</td>
+                    <td>${r.phase_r.voltage.toFixed(1)}</td><td>${r.phase_r.current.toFixed(2)}</td><td><strong>${r.phase_r.power_factor.toFixed(3)}</strong></td>
+                    <td>${r.phase_y.voltage.toFixed(1)}</td><td>${r.phase_y.current.toFixed(2)}</td><td><strong>${r.phase_y.power_factor.toFixed(3)}</strong></td>
+                    <td>${r.phase_b.voltage.toFixed(1)}</td><td>${r.phase_b.current.toFixed(2)}</td><td><strong>${r.phase_b.power_factor.toFixed(3)}</strong></td>
+                    <td><strong>${r.overall_pf.toFixed(3)}</strong></td>
+                    <td>${st}</td>
+                </tr>`;
+                }).join('');
+
+            } catch (err) {
+                document.getElementById('connection-status').className = 'status-badge disconnected';
+                document.getElementById('connection-status').textContent = '● Disconnected';
+            }
+        }
+
+        // Init gauges
+        drawGauge('gauge-r', 0); drawGauge('gauge-y', 0); drawGauge('gauge-b', 0);
+        setInterval(fetchData, REFRESH_MS);
+        fetchData();
+    </script>
+</body>
+
+</html>
